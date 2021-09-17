@@ -1,8 +1,5 @@
 package com.inatel.quotationmanagement.quotationmanagement.models;
 
-import javax.persistence.Entity;
-
-@Entity
 public class Stock {
     private String id;
     
