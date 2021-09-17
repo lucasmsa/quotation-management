@@ -3,6 +3,8 @@ package com.inatel.quotationmanagement.quotationmanagement.services;
 import java.util.Map;
 import java.util.Optional;
 import java.math.BigDecimal;
+import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Service;
 import com.inatel.quotationmanagement.quotationmanagement.models.Quote;
 import com.inatel.quotationmanagement.quotationmanagement.models.Stock;
 import com.inatel.quotationmanagement.quotationmanagement.models.StockQuote;
@@ -14,8 +16,6 @@ import com.inatel.quotationmanagement.quotationmanagement.errors.InvalidResource
 import com.inatel.quotationmanagement.quotationmanagement.repository.StockQuotesRepository;
 import com.inatel.quotationmanagement.quotationmanagement.errors.ResourceNotFoundException;
 
-import org.springframework.stereotype.Service;
-
 @Service
 public class CreateNewStockQuoteService {
 
@@ -23,22 +23,26 @@ public class CreateNewStockQuoteService {
     private StockQuotesRepository stockQuotesRepository;
     private QuoteRepository quoteRepository;
     private StockQuotesForm stockQuoteForm;
+    private CacheManager cacheManager;
     private QuoteDateValidator quoteDateValidator;
 
     public CreateNewStockQuoteService(StockRepository stockRepository, 
                                       StockQuotesRepository stockQuotesRepository, 
                                       QuoteRepository quoteRepository, 
                                       StockQuotesForm stockQuotesForm, 
+                                      CacheManager cacheManager,
                                       QuoteDateValidator quoteDateValidator) {
         this.stockRepository = stockRepository;
         this.stockQuotesRepository = stockQuotesRepository;
         this.quoteRepository = quoteRepository;
         this.stockQuoteForm = stockQuotesForm;
+        this.cacheManager = cacheManager;
         this.quoteDateValidator = quoteDateValidator;
     }
 
     public StockQuote execute() {
         String stockId = stockQuoteForm.getStockId();
+        
         Stock fetchedStock = stockRepository.getStock(stockId);
         if (fetchedStock == null) {
             throw new ResourceNotFoundException();
@@ -48,14 +52,7 @@ public class CreateNewStockQuoteService {
             boolean fetchedStockQuoteExists = optionalStockQuote.isPresent();
             StockQuote fetchedStockQuote = fetchedStockQuoteExists ? optionalStockQuote.get() : null;
 
-            for (var quote : stockQuoteForm.getQuotes().entrySet()) {
-                boolean isValidDate = quoteDateValidator.isValid(quote.getKey());
-                if (!isValidDate) throw new InvalidResourceException();
-
-                if (fetchedStockQuoteExists && fetchedStockQuote.getQuotes().containsKey(quote.getKey())) {
-                        throw new InvalidResourceException();
-                }
-            }
+            this.validateQuoteDates(fetchedStockQuoteExists, fetchedStockQuote);
             
             stockQuoteForm.getQuotes().entrySet().forEach(quote ->  {
                 if (fetchedStockQuoteExists) fetchedStockQuote.addToQuotes(quote.getKey(), quote.getValue());
@@ -67,6 +64,17 @@ public class CreateNewStockQuoteService {
                                     ? stockQuotesRepository.save(fetchedStockQuote)
                                     : stockQuotesRepository.save(new StockQuote(stockId, formQuotes));
             return stockQuote;
+        }
+    }
+
+    private void validateQuoteDates(boolean fetchedStockQuoteExists, StockQuote fetchedStockQuote) {
+        for (var quote : stockQuoteForm.getQuotes().entrySet()) {
+            boolean isValidDate = quoteDateValidator.isValid(quote.getKey());
+            if (!isValidDate) throw new InvalidResourceException();
+
+            if (fetchedStockQuoteExists && fetchedStockQuote.getQuotes().containsKey(quote.getKey())) {
+                    throw new InvalidResourceException();
+            }
         }
     }
 }

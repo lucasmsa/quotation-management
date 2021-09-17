@@ -2,6 +2,8 @@ package com.inatel.quotationmanagement.quotationmanagement.controllers;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,14 +28,17 @@ public class StockQuotesController {
     private StockRepository stockRepository;
     private StockQuotesRepository stockQuotesRepository;
     private QuoteDateValidator quoteDateValidator;
+    private CacheManager cacheManager;
     private QuoteRepository quoteRepository;
 
     public StockQuotesController(StockRepository stockRepository, 
                                  StockQuotesRepository stockQuotesRepository,
                                  QuoteDateValidator quoteDateValidator,
+                                 CacheManager cacheManager,
                                  QuoteRepository quoteRepository) {
         this.stockRepository = stockRepository;
         this.stockQuotesRepository = stockQuotesRepository;
+        this.cacheManager = cacheManager;
         this.quoteDateValidator = quoteDateValidator;
         this.quoteRepository = quoteRepository;
     }
@@ -56,7 +61,7 @@ public class StockQuotesController {
 
     @PostMapping
     public ResponseEntity<StockQuote> createOrUpdate(@RequestBody StockQuotesForm stockQuoteForm) {
-        CreateNewStockQuoteService createNewStockQuoteService = new CreateNewStockQuoteService(stockRepository, stockQuotesRepository, quoteRepository, stockQuoteForm, quoteDateValidator);
+        CreateNewStockQuoteService createNewStockQuoteService = new CreateNewStockQuoteService(stockRepository, stockQuotesRepository, quoteRepository, stockQuoteForm, cacheManager, quoteDateValidator);
         StockQuote stockQuote = createNewStockQuoteService.execute();
 
         return ResponseEntity.status(HttpStatus.OK).body(stockQuote);
