@@ -8,6 +8,13 @@ import org.springframework.stereotype.Component;
 public class StockQuotesForm {
     private String stockId;
     private Map<String, BigDecimal> quotes;
+
+    public StockQuotesForm(String stockId, Map<String, BigDecimal> quotes) {
+        this.stockId = stockId;
+        this.quotes = quotes;
+    }
+
+    StockQuotesForm() {}
     
     public String getStockId() {
         return this.stockId;
@@ -24,4 +31,8 @@ public class StockQuotesForm {
     public void setQuotes(Map<String, BigDecimal> quotes) {
         this.quotes = quotes;
     }
+    
+    public void addToQuotes(String quoteDate, BigDecimal value) {
+        quotes.put(quoteDate, value);
+    } 
 }

@@ -42,29 +42,33 @@ public class CreateNewStockQuoteService {
             Optional<StockQuote> optionalStockQuote = stockQuotesRepository.findByStockId(stockId);
             boolean fetchedStockQuoteExists = optionalStockQuote.isPresent();
             StockQuote fetchedStockQuote = fetchedStockQuoteExists ? optionalStockQuote.get() : null;
-
+            
             this.validateQuoteDates(fetchedStockQuoteExists, fetchedStockQuote);
-
+            System.out.println("AFTER VALIDATING QUOTE DATES " + fetchedStockQuote);
             if (fetchedStockQuoteExists) {
                 stockQuoteForm.getQuotes().entrySet().forEach(quote ->  {
                     fetchedStockQuote.addToQuotes(quote.getKey(), quote.getValue());
                });
             }
             
-           
             StockQuote stockQuote = fetchedStockQuoteExists 
                                     ? stockQuotesRepository.save(fetchedStockQuote)
                                     : stockQuotesRepository.save(new StockQuote(stockId, formQuotes));
+            System.out.println("FETCHED UPDATED: " + stockQuote);
             return stockQuote;
         }
     }
 
-    private void validateQuoteDates(boolean fetchedStockQuoteExists, StockQuote fetchedStockQuote) {
+    public void validateQuoteDates(boolean fetchedStockQuoteExists, StockQuote fetchedStockQuote) {
         for (var quote : stockQuoteForm.getQuotes().entrySet()) {
             boolean isValidDate = quoteDateValidator.isValid(quote.getKey());
-            if (!isValidDate) throw new InvalidResourceException();
+            if (!isValidDate) { 
+                System.out.println("INVALID DATE " + quote.getKey());
+                throw new InvalidResourceException();
+            }
 
             if (fetchedStockQuoteExists && fetchedStockQuote.getQuotes().containsKey(quote.getKey())) {
+                    System.out.println("REPEATED DATE " + quote.getKey());
                     throw new InvalidResourceException();
             }
         }

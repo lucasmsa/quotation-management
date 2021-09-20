@@ -1,29 +1,23 @@
-package com.inatel.quotationmanagement.quotationmanagement.stock.examples;
+package com.inatel.quotationmanagement.quotationmanagement.stock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import com.inatel.quotationmanagement.quotationmanagement.controllers.StockController;
-import com.inatel.quotationmanagement.quotationmanagement.errors.ResourceAlreadyExistsException;
-import com.inatel.quotationmanagement.quotationmanagement.models.Stock;
-import com.inatel.quotationmanagement.quotationmanagement.repository.StockRepository;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
+import com.inatel.quotationmanagement.quotationmanagement.models.Stock;
+import com.inatel.quotationmanagement.quotationmanagement.repository.StockRepository;
+import com.inatel.quotationmanagement.quotationmanagement.controllers.StockController;
+import com.inatel.quotationmanagement.quotationmanagement.errors.ResourceAlreadyExistsException;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +36,7 @@ class StockControllerTests {
     }
 
 		@Test
-		void fetchAllStockSuccessfullyTest() {
+		void shouldFetchAllStockSuccessfullyTest() {
 			List<Stock> listOfStocks = stocks();
 			when(stockRepository.getAllStocks()).thenReturn(listOfStocks);
 

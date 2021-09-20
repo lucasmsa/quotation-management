@@ -3,18 +3,18 @@ package com.inatel.quotationmanagement;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.event.EventListener;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import com.inatel.quotationmanagement.quotationmanagement.models.Notification;
-import com.inatel.quotationmanagement.quotationmanagement.repository.CacheRepository;
+import com.inatel.quotationmanagement.quotationmanagement.repository.NotificationRepository;
 
 @SpringBootApplication
 @EnableCaching
 public class QuotationManagementApplication {
-	private CacheRepository cacheRepository;
+	private NotificationRepository notificationRepository;
 
 	public QuotationManagementApplication() {
-		this.cacheRepository = new CacheRepository();
+		this.notificationRepository = new NotificationRepository();
 	}
 
 	public static void main(String[] args) {
@@ -23,6 +23,6 @@ public class QuotationManagementApplication {
 
 	@EventListener(ApplicationReadyEvent.class)
     public void notifyHost() {
-        this.cacheRepository.saveHost(new Notification("localhost", "8081"));
+        // this.notificationRepository.saveHost(new Notification("localhost", "8081"));
     }
 }

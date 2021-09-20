@@ -2,14 +2,13 @@ package com.inatel.quotationmanagement.quotationmanagement.repository;
 
 import java.util.List;
 import java.util.Arrays;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.cache.annotation.Cacheable;
-import org.hibernate.annotations.Cache;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import com.inatel.quotationmanagement.quotationmanagement.models.Stock;
 
 @Repository
@@ -26,7 +25,6 @@ public class StockRepository {
     }
 
     @Transactional
-    @CachePut(value="stocks", key="#stockId")
     public Stock getStock(String stockId) {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Stock> response = restTemplate.getForEntity(this.url + stockId, Stock.class);
@@ -39,6 +37,6 @@ public class StockRepository {
     @CacheEvict(value = "stocks", allEntries = true)
     public void addStock(Stock stock) {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForEntity(this.url, stock, Stock.class);
+        restTemplate.postForEntity(this.url, stock, Stock.class).getBody();
     }
 }

@@ -1,6 +1,11 @@
 package com.inatel.quotationmanagement.quotationmanagement.controllers;
 
 import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +29,7 @@ public class StockController {
     @GetMapping
     public ResponseEntity<List<Stock>> list() {
         List<Stock> stocks = this.stockRepository.getAllStocks();
-        System.out.println(stocks + " stocks, INSIDE CONTROLLER");
+    
         return ResponseEntity.status(HttpStatus.OK).body(stocks);
     }
 
