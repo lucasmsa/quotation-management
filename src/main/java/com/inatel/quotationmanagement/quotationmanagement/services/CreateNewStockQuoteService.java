@@ -63,7 +63,6 @@ public class CreateNewStockQuoteService {
         for (var quote : stockQuoteForm.getQuotes().entrySet()) {
             boolean isValidDate = quoteDateValidator.isValid(quote.getKey());
             if (!isValidDate) { 
-                System.out.println("INVALID DATE " + quote.getKey());
                 throw new InvalidResourceException();
             }
 
