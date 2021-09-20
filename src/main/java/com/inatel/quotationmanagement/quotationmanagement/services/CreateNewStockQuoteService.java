@@ -44,7 +44,7 @@ public class CreateNewStockQuoteService {
             StockQuote fetchedStockQuote = fetchedStockQuoteExists ? optionalStockQuote.get() : null;
             
             this.validateQuoteDates(fetchedStockQuoteExists, fetchedStockQuote);
-            System.out.println("AFTER VALIDATING QUOTE DATES " + fetchedStockQuote);
+
             if (fetchedStockQuoteExists) {
                 stockQuoteForm.getQuotes().entrySet().forEach(quote ->  {
                     fetchedStockQuote.addToQuotes(quote.getKey(), quote.getValue());
@@ -54,7 +54,7 @@ public class CreateNewStockQuoteService {
             StockQuote stockQuote = fetchedStockQuoteExists 
                                     ? stockQuotesRepository.save(fetchedStockQuote)
                                     : stockQuotesRepository.save(new StockQuote(stockId, formQuotes));
-            System.out.println("FETCHED UPDATED: " + stockQuote);
+
             return stockQuote;
         }
     }
@@ -68,7 +68,6 @@ public class CreateNewStockQuoteService {
             }
 
             if (fetchedStockQuoteExists && fetchedStockQuote.getQuotes().containsKey(quote.getKey())) {
-                    System.out.println("REPEATED DATE " + quote.getKey());
                     throw new InvalidResourceException();
             }
         }
