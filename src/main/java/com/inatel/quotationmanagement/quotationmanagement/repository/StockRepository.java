@@ -25,6 +25,7 @@ public class StockRepository {
         return stocks;
     }
 
+    @Transactional
     @CachePut(value="stocks", key="#stockId")
     public Stock getStock(String stockId) {
         RestTemplate restTemplate = new RestTemplate();

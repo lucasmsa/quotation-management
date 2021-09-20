@@ -1,11 +1,8 @@
 package com.inatel.quotationmanagement.quotationmanagement.controllers;
 
 import java.util.List;
-import javax.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,16 +24,16 @@ public class StockController {
     @GetMapping
     public ResponseEntity<List<Stock>> list() {
         List<Stock> stocks = this.stockRepository.getAllStocks();
+        System.out.println(stocks + " stocks, INSIDE CONTROLLER");
         return ResponseEntity.status(HttpStatus.OK).body(stocks);
     }
 
     @PostMapping
     public ResponseEntity<Stock> create(@RequestBody Stock newStock) {
         Stock fetchedStock = this.stockRepository.getStock(newStock.getId());
-        System.out.println("FETCHED STOCK " + fetchedStock);
+
         if (fetchedStock == null) {
             this.stockRepository.addStock(newStock);
-            System.out.println("ADDED STOCK " + newStock);
             return ResponseEntity.status(HttpStatus.OK).body(newStock);
         } else {
             throw new ResourceAlreadyExistsException();

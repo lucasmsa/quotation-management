@@ -2,19 +2,16 @@ package com.inatel.quotationmanagement.quotationmanagement.models;
 
 import java.util.Map;
 import java.math.BigDecimal;
-
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "stock_quotes")
@@ -28,7 +25,7 @@ public class StockQuote {
     private String stockId;
 
     @ElementCollection
-    @CollectionTable(name="stock_quote_mapping", joinColumns = {@JoinColumn(name = "stock_quote_id", referencedColumnName = "id")})
+    @CollectionTable(name="quotes_mapping", joinColumns = {@JoinColumn(name = "stock_quote_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "quote_date")
     @Column(name="value")
     private Map<String, BigDecimal> quotes;

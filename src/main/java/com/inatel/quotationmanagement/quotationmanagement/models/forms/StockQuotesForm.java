@@ -1,10 +1,8 @@
 package com.inatel.quotationmanagement.quotationmanagement.models.forms;
 
 import java.util.Map;
-
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
+import org.springframework.stereotype.Component;
 
 @Component
 public class StockQuotesForm {
